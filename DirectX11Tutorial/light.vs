@@ -18,6 +18,11 @@ cbuffer CameraBuffer
     float padding;
 };
 
+cbuffer PointLightPositionBuffer
+{
+    float4 pointLightPosition[NUM_LIGHTS];
+};
+
 //////////////
 // TYPEDEFS //
 //////////////
@@ -34,6 +39,7 @@ struct PixelInputType
     float2 tex : TEXCOORD0;
     float3 normal : NORMAL;
     float3 viewDirection : TEXCOORD1;
+    float3 pointLightPos[NUM_LIGHTS] : TEXCOORD2;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,9 +72,18 @@ PixelInputType LightVertexShader(VertexInputType input)
 
     // Determine the viewing direction based on the position of the camera and the position of the vertex in the world.
     output.viewDirection = cameraPosition.xyz - worldPosition.xyz;
-	
+
     // Normalize the viewing direction vector.
     output.viewDirection = normalize(output.viewDirection);
+
+    for(i=0; i<NUM_LIGHTS; i++)
+    {
+        // Determine the light positions based on the position of the lights and the position of the vertex in the world.
+        output.pointLightPos[i] = pointLightPosition[i].xyz - worldPosition.xyz;
+
+        // Normalize the light position vectors.
+        //output.pointLightPos[i] = normalize(output.pointLightPos[i]);
+    }
 
     return output;
 }

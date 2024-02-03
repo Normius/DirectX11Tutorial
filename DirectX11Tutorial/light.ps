@@ -17,6 +17,11 @@ cbuffer LightBuffer
     float4 specularColor;
 };
 
+cbuffer PointLightColorBuffer
+{
+    float4 pointLightDiffuseColor[NUM_LIGHTS];
+};
+
 //////////////
 // TYPEDEFS //
 //////////////
@@ -26,6 +31,7 @@ struct PixelInputType
     float2 tex : TEXCOORD0;
     float3 normal : NORMAL;
     float3 viewDirection : TEXCOORD1;
+    float3 pointLightPos[NUM_LIGHTS] : TEXCOORD2;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,9 +42,16 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
     float4 textureColor;
     float3 lightDir;
     float lightIntensity;
-    float4 color;
     float3 reflection;
     float4 specular;
+    float4 color;
+
+    float pointLightIntensity[NUM_LIGHTS];
+    float4 pointLightColorArray[NUM_LIGHTS];
+    float4 pointLightColorSum;
+    int i;
+    float attenuation;
+    float distance;
 
     // Sample the pixel color from the texture using the sampler at this texture coordinate location.
     textureColor = shaderTexture.Sample(SampleType, input.tex);
@@ -49,7 +62,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
     // Initialize the specular color.
     specular = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-     // Invert the light direction for calculations.
+    // Invert the light direction for calculations.
     lightDir = -lightDirection;
 
     // Calculate the amount of light on this pixel.
@@ -61,7 +74,7 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
         color += (diffuseColor * lightIntensity);
 
         // Saturate the ambient and diffuse color.
-        color = saturate(color);
+        //color = saturate(color);
 
         // Calculate the reflection vector based on the light intensity, normal vector, and light direction.
         reflection = normalize(2.0f * lightIntensity * input.normal - lightDir);
@@ -70,8 +83,38 @@ float4 LightPixelShader(PixelInputType input) : SV_TARGET
         specular = pow(saturate(dot(reflection, input.viewDirection)), specularPower);
     }
 
-    // Multiply the texture pixel and the final diffuse color to get the final pixel color result.
-    color = color * textureColor;
+    for(i=0; i<NUM_LIGHTS; i++)
+    {
+        distance = length(input.pointLightPos[i]);
+        attenuation = 1.0f + 0.09f * distance + 0.032f * distance * distance;
+        //attenuation = 1.0f;
+
+        // Normalize the light position vectors.
+        input.pointLightPos[i] = normalize(input.pointLightPos[i]);
+
+        // Calculate the different amounts of light on this pixel based on the positions of the lights.
+        pointLightIntensity[i] = dot(input.normal, input.pointLightPos[i]) / attenuation;
+        //pointLightIntensity[i] = dot(input.normal, input.pointLightPos[i]);
+
+        // Determine the diffuse color amount of each of the four lights.
+        pointLightColorArray[i] = pointLightDiffuseColor[i] * pointLightIntensity[i];
+    }
+
+    // Initialize the sum of colors.
+    pointLightColorSum = float4(0.0f, 0.0f, 0.0f, 1.0f);
+
+    // Add all of the light colors up.
+    for(i=0; i<NUM_LIGHTS; i++)
+    {
+        pointLightColorSum.r += pointLightColorArray[i].r;
+        pointLightColorSum.g += pointLightColorArray[i].g;
+        pointLightColorSum.b += pointLightColorArray[i].b;
+    }
+
+    // Multiply the texture pixel by the combination of all four light colors to get the final result.
+    color = (saturate(color) + saturate(pointLightColorSum)) * textureColor;
+    //color = saturate(color + pointLightColorSum) * textureColor;
+    //color = color * textureColor;
 
     // Add the specular component last to the output color.
     color = saturate(color + specular);

@@ -5,7 +5,7 @@
 
 
 ApplicationClass::ApplicationClass()
-	: m_Direct3D(nullptr), m_Camera(nullptr), m_Model(nullptr), m_LightShader(nullptr), m_Light(nullptr)
+	: m_Direct3D(nullptr), m_Camera(nullptr), m_Model(nullptr), m_LightShader(nullptr), m_Light(nullptr), m_PointLights(nullptr)
 {
 }
 
@@ -39,8 +39,9 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// Create the camera object.
 	m_Camera = new CameraClass;
 
-	// Set the initial position of the camera. (Позиция камеры)
-	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
+	// Set the initial position of the camera.
+	m_Camera->SetPosition(0.0f, 1.0f, -8.0f);
+	//m_Camera->Render();
 
 	// Set the file name of the model.
 	strcpy_s(modelFilename, "data/sphere.txt"); //Имя файла модели
@@ -74,9 +75,32 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(1.0f, 0.0f, 1.0f);
+	m_Light->SetDirection(1.0f, -1.0f, 1.0f);
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(32.0f);
+
+
+	// Set the number of lights we will use.
+	m_numLights = 5;
+
+	// Create and initialize the light objects array.
+	m_PointLights = new LightClass[m_numLights];
+
+	// Manually set the color and position of each light.
+	m_PointLights[0].SetDiffuseColor(1.0f, 0.0f, 0.0f, 1.0f);  // Red
+	m_PointLights[0].SetPosition(-2.0f, 2.0f, -1.0f);
+
+	m_PointLights[1].SetDiffuseColor(0.0f, 1.0f, 0.0f, 1.0f);  // Green
+	m_PointLights[1].SetPosition(2.0f, 2.0f, -1.0f);
+
+	m_PointLights[2].SetDiffuseColor(0.0f, 0.0f, 1.0f, 1.0f);  // Blue
+	m_PointLights[2].SetPosition(-2.0f, -2.0f, -1.0f);
+
+	m_PointLights[3].SetDiffuseColor(0.0f, 1.0f, 1.0f, 1.0f);  // White
+	m_PointLights[3].SetPosition(2.0f, -2.0f, -1.0f);
+
+	m_PointLights[4].SetDiffuseColor(1.0f, 0.0f, 1.0f, 1.0f);  // White
+	m_PointLights[4].SetPosition(0.0f, 1.0f, 0.0f);
 
 	return true;
 }
@@ -84,6 +108,13 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void ApplicationClass::Shutdown()
 {
+	// Release the light objects.
+	if (m_PointLights)
+	{
+		delete[] m_PointLights;
+		m_PointLights = nullptr;
+	}
+
 	// Release the light object.
 	if (m_Light)
 	{
@@ -153,6 +184,8 @@ bool ApplicationClass::Render(float rotation)
 {
 	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, rotateMatrix, translateMatrix, scaleMatrix, srMatrix;
 	bool result;
+	XMFLOAT4 pointLightDiffuseColor[5], pointLightPosition[5];
+	int i;
 
 
 	// Clear the buffers to begin the scene.
@@ -166,6 +199,19 @@ bool ApplicationClass::Render(float rotation)
 	m_Camera->GetViewMatrix(viewMatrix);
 	m_Direct3D->GetProjectionMatrix(projectionMatrix);
 
+	// Get the light properties.
+	//for (i = 0; i < m_numLights; i++)
+	for (i = 3; i < 4; i++)
+	{
+		// Create the diffuse color array from the four light colors.
+		pointLightDiffuseColor[i] = m_PointLights[i].GetDiffuseColor();
+
+		// Create the light position array from the four light positions.
+		pointLightPosition[i] = m_PointLights[i].GetPosition();
+	}
+
+	//rotation = -0.0174532925f * 20.0f;
+	//rotation = 0.0f;
 	scaleMatrix = XMMatrixScaling(1.0f, 1.0f, 1.0f);  // Build the scaling matrix.
 	rotateMatrix = XMMatrixRotationY(rotation);  // Build the rotation matrix.
 	translateMatrix = XMMatrixTranslation(0.0f, 0.0f, 0.0f);  // Build the translation matrix.
@@ -178,9 +224,9 @@ bool ApplicationClass::Render(float rotation)
 	m_Model->Render(m_Direct3D->GetDeviceContext());
 
 	// Render the model using the light shader.
-	result = m_LightShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, 
-		m_Model->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
-		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
+	result = m_LightShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, m_Model->GetTexture(),
+		m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower(),
+		pointLightDiffuseColor, pointLightPosition);
 	if (!result)
 	{
 		return false;
