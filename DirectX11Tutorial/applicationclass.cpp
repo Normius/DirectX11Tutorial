@@ -210,7 +210,6 @@ bool ApplicationClass::Render(float rotation)
 		pointLightPosition[i] = m_PointLights[i].GetPosition();
 	}
 
-	//rotation = -0.0174532925f * 20.0f;
 	//rotation = 0.0f;
 	scaleMatrix = XMMatrixScaling(1.0f, 1.0f, 1.0f);  // Build the scaling matrix.
 	rotateMatrix = XMMatrixRotationY(rotation);  // Build the rotation matrix.
