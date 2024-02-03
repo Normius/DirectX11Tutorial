@@ -7,6 +7,11 @@
 //#define _LIGHTSHADERCLASS_H_
 
 /////////////
+// GLOBALS //
+/////////////
+const int NUM_LIGHTS = 5;
+
+/////////////
 // INCLUDES //
 //////////////
 #include <d3d11.h>

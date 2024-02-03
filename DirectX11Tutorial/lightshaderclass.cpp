@@ -46,6 +46,8 @@ bool LightShaderClass::Initialize(ID3D11Device* device, HWND hwnd)
 		return false;
 	}
 
+
+
 	return true;
 }
 
@@ -410,9 +412,6 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, X
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
-	MatrixBufferType* dataPtr;
-	LightBufferType* dataPtr2;
-	CameraBufferType* dataPtr3;
 	unsigned int bufferNumber;
 	MatrixBufferType* dataPtr;
 	LightBufferType* dataPtr2;

@@ -48,7 +48,6 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	// Set the name of the texture file that we will be loading. //Имя файла текстуры
 	strcpy_s(textureFilename, "data/stone01.tga");
-	//strcpy_s(textureFilename, "data/dwsample.tga");
 
 	// Create and initialize the model object.
 	m_Model = new ModelClass;
@@ -182,7 +181,8 @@ bool ApplicationClass::Frame()
 
 bool ApplicationClass::Render(float rotation)
 {
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, rotateMatrix, translateMatrix, scaleMatrix, srMatrix;
+	XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+	XMMATRIX rotateMatrix, translateMatrix, scaleMatrix, srMatrix;
 	bool result;
 	XMFLOAT4 pointLightDiffuseColor[5], pointLightPosition[5];
 	int i;
