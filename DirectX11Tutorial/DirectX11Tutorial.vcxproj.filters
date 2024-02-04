@@ -57,6 +57,12 @@
     <ClInclude Include="lightclass.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="bitmapclass.h">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="textureshaderclass.h">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectX11Tutorial.rc">
@@ -102,12 +108,30 @@
     <ClCompile Include="lightclass.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="bitmapclass.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="textureshaderclass.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="light.vs">
       <Filter>Source Files\HLSL shader program</Filter>
     </None>
     <None Include="light.ps">
+      <Filter>Source Files\HLSL shader program</Filter>
+    </None>
+    <None Include="color.vs">
+      <Filter>Source Files\HLSL shader program</Filter>
+    </None>
+    <None Include="color.ps">
+      <Filter>Source Files\HLSL shader program</Filter>
+    </None>
+    <None Include="texture.vs">
+      <Filter>Source Files\HLSL shader program</Filter>
+    </None>
+    <None Include="texture.ps">
       <Filter>Source Files\HLSL shader program</Filter>
     </None>
   </ItemGroup>
