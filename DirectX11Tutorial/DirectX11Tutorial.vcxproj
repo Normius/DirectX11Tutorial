@@ -128,7 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="applicationclass.h" />
-    <ClInclude Include="bitmapclass.h" />
+    <ClInclude Include="spriteclass.h" />
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="lightclass.h" />
     <ClInclude Include="textureclass.h" />
@@ -141,6 +141,7 @@
     <ClInclude Include="systemclass.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="textureshaderclass.h" />
+    <ClInclude Include="timerclass.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectX11Tutorial.rc" />
@@ -151,7 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="applicationclass.cpp" />
-    <ClCompile Include="bitmapclass.cpp" />
+    <ClCompile Include="spriteclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="lightclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="modelclass.cpp" />
     <ClCompile Include="systemclass.cpp" />
     <ClCompile Include="textureshaderclass.cpp" />
+    <ClCompile Include="timerclasscpp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="color.ps" />

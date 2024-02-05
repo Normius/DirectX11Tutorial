@@ -16,7 +16,8 @@
 //#include "lightshaderclass.h"
 //#include "lightclass.h"
 #include "textureshaderclass.h"
-#include "bitmapclass.h"
+#include "spriteclass.h"
+#include "timerclass.h"
 
 
 /////////////
@@ -57,7 +58,8 @@ private:
 	//int m_numLights;
 
 	TextureShaderClass* m_TextureShader;
-	BitmapClass* m_Bitmap;
+	SpriteClass* m_Sprite;
+	TimerClass* m_Timer;
 };
 
 //#endif
