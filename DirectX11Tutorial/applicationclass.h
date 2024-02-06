@@ -15,9 +15,12 @@
 //#include "modelclass.h"
 //#include "lightshaderclass.h"
 //#include "lightclass.h"
-#include "textureshaderclass.h"
-#include "spriteclass.h"
-#include "timerclass.h"
+//#include "textureshaderclass.h"
+//#include "spriteclass.h"
+//#include "timerclass.h"
+#include "fontshaderclass.h"
+#include "fontclass.h"
+#include "textclass.h"
 
 
 /////////////
@@ -57,9 +60,13 @@ private:
 	//LightClass* m_PointLights;
 	//int m_numLights;
 
-	TextureShaderClass* m_TextureShader;
-	SpriteClass* m_Sprite;
-	TimerClass* m_Timer;
+	//TextureShaderClass* m_TextureShader;
+	//SpriteClass* m_Sprite;
+	//TimerClass* m_Timer;
+
+	FontShaderClass* m_FontShader;
+	FontClass* m_Font;
+	TextClass* m_TextString1, * m_TextString2, * m_TextString3;
 };
 
 //#endif

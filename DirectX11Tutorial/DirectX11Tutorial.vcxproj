@@ -128,9 +128,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="applicationclass.h" />
+    <ClInclude Include="fontclass.h" />
+    <ClInclude Include="fontshaderclass.h" />
     <ClInclude Include="spriteclass.h" />
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="lightclass.h" />
+    <ClInclude Include="textclass.h" />
     <ClInclude Include="textureclass.h" />
     <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="d3dclass.h" />
@@ -152,9 +155,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="applicationclass.cpp" />
+    <ClCompile Include="fontclass.cpp" />
+    <ClCompile Include="fontshaderclass.cpp" />
     <ClCompile Include="spriteclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="lightclass.cpp" />
+    <ClCompile Include="textclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="lightshaderclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
@@ -168,6 +174,8 @@
   <ItemGroup>
     <None Include="color.ps" />
     <None Include="color.vs" />
+    <None Include="font.ps" />
+    <None Include="font.vs" />
     <None Include="light.ps" />
     <None Include="light.vs" />
     <None Include="texture.ps" />

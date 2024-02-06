@@ -7,7 +7,8 @@
 ApplicationClass::ApplicationClass()
 	: m_Direct3D(nullptr), m_Camera(nullptr), 
 	//m_Model(nullptr), m_LightShader(nullptr), m_Light(nullptr), m_PointLights(nullptr), 
-	m_TextureShader(nullptr), m_Sprite(nullptr), m_Timer(nullptr)
+	//m_TextureShader(nullptr), m_Sprite(nullptr), m_Timer(nullptr),
+	m_FontShader(nullptr), m_Font(nullptr), m_TextString1(nullptr), m_TextString2(nullptr), m_TextString3(nullptr)
 {
 }
 
@@ -27,7 +28,9 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	//char modelFilename[128];
 	//char textureFilename[128];
 
-	char spriteFilename[128];
+	//char spriteFilename[128];
+
+	char testString1[256], testString2[256], testString3[256];
 	bool result;
 
 	// Create and initialize the Direct3D object.
@@ -47,37 +50,95 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Camera->SetPosition(0.0f, 0.0f, -10.0f);
 	m_Camera->Render();
 
-	// Create and initialize the texture shader object.
-	m_TextureShader = new TextureShaderClass;
+	// Create and initialize the font shader object.
+	m_FontShader = new FontShaderClass;
 
-	result = m_TextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	result = m_FontShader->Initialize(m_Direct3D->GetDevice(), hwnd);
 	if (!result)
 	{
-		MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
+		MessageBox(hwnd, L"Could not initialize the font shader object.", L"Error", MB_OK);
 		return false;
 	}
 
-	// Set the file name of the bitmap file.
-	strcpy_s(spriteFilename, "data/sprite_data_01.txt");
-	//strcpy_s(bitmapFilename, "data/dwsample.tga");
+	// Create and initialize the font object.
+	m_Font = new FontClass;
 
-	// Create and initialize the bitmap object.
-	m_Sprite = new SpriteClass;
-
-	result = m_Sprite->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, spriteFilename, 50, 50);
+	result = m_Font->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), 0);
 	if (!result)
 	{
 		return false;
 	}
 
-	// Create and initialize the timer object.
-	m_Timer = new TimerClass;
+	// Set the strings we want to display.
+	strcpy_s(testString1, "X(<o_o>)X");
+	strcpy_s(testString2, "Crab!");
+	strcpy_s(testString3, "(HI HI HI!)");
 
-	result = m_Timer->Initialize();
+	// Create and initialize the first text object.
+	m_TextString1 = new TextClass;
+
+	int strWidth = m_Font->GetSentencePixelLength(testString1);
+	int strHeight = m_Font->GetFontHeight() / 2;;
+	
+	int widthCenterPos = (screenWidth / 2) - (strWidth / 2);
+	int heightCenterPos = (screenHeight / 2) - (strHeight / 2);
+	
+	result = m_TextString1->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, m_Font, testString1, widthCenterPos, heightCenterPos, 1.0f, 0.2f, 0.0f);
 	if (!result)
 	{
 		return false;
 	}
+
+	// Create and initialize the second text object.
+	m_TextString2 = new TextClass;
+
+	result = m_TextString2->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, m_Font, testString2, 300, 150, 0.0f, 0.5f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	// Create and initialize the third text object.
+	m_TextString3 = new TextClass;
+
+	result = m_TextString3->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, m_Font, testString3, 300, 200, 0.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
+
+	// ---------------------------------------- 2D rendering with sprites --------------------------------------------
+	//// Create and initialize the texture shader object.
+	//m_TextureShader = new TextureShaderClass;
+
+	//result = m_TextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	//if (!result)
+	//{
+	//	MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
+	//	return false;
+	//}
+
+	//// Set the file name of the bitmap file.
+	//strcpy_s(spriteFilename, "data/sprite_data_01.txt");
+	////strcpy_s(bitmapFilename, "data/dwsample.tga");
+
+	//// Create and initialize the bitmap object.
+	//m_Sprite = new SpriteClass;
+
+	//result = m_Sprite->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, spriteFilename, 50, 50);
+	//if (!result)
+	//{
+	//	return false;
+	//}
+
+	//// Create and initialize the timer object.
+	//m_Timer = new TimerClass;
+
+	//result = m_Timer->Initialize();
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
 
 	// --------------------------------------------- 3D rendering with light ----------------------------------------------------
@@ -145,29 +206,68 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void ApplicationClass::Shutdown()
 {
-	// Release the timer object.
-	if (m_Timer)
+	// Release the text string objects.
+	if (m_TextString3)
 	{
-		delete m_Timer;
-		m_Timer = nullptr;
+		m_TextString3->Shutdown();
+		delete m_TextString3;
+		m_TextString3 = nullptr;
+	}
+	
+	if (m_TextString2)
+	{
+		m_TextString2->Shutdown();
+		delete m_TextString2;
+		m_TextString2 = nullptr;
 	}
 
-	// Release the sprite object.
-	if (m_Sprite)
+	if (m_TextString1)
 	{
-		m_Sprite->Shutdown();
-		delete m_Sprite;
-		m_Sprite = nullptr;
+		m_TextString1->Shutdown();
+		delete m_TextString1;
+		m_TextString1 = nullptr;
 	}
 
-	// Release the texture shader object.
-	if (m_TextureShader)
+	// Release the font object.
+	if (m_Font)
 	{
-		m_TextureShader->Shutdown();
-		delete m_TextureShader;
-		m_TextureShader = nullptr;
-
+		m_Font->Shutdown();
+		delete m_Font;
+		m_Font = nullptr;
 	}
+
+	// Release the font shader object.
+	if (m_FontShader)
+	{
+		m_FontShader->Shutdown();
+		delete m_FontShader;
+		m_FontShader = nullptr;
+	}
+
+	//// Release the timer object.
+	//if (m_Timer)
+	//{
+	//	delete m_Timer;
+	//	m_Timer = nullptr;
+	//}
+
+	//// Release the sprite object.
+	//if (m_Sprite)
+	//{
+	//	m_Sprite->Shutdown();
+	//	delete m_Sprite;
+	//	m_Sprite = nullptr;
+	//}
+
+	//// Release the texture shader object.
+	//if (m_TextureShader)
+	//{
+	//	m_TextureShader->Shutdown();
+	//	delete m_TextureShader;
+	//	m_TextureShader = nullptr;
+
+	//}
+
 	//// Release the light objects.
 	//if (m_PointLights)
 	//{
@@ -231,13 +331,13 @@ bool ApplicationClass::Frame()
 	}*/
 
 	// Update the system stats.
-	m_Timer->Frame();
+	//m_Timer->Frame();
 
 	// Get the current frame time.
-	frameTime = m_Timer->GetTime();
+	//frameTime = m_Timer->GetTime();
 
 	// Update the sprite object using the frame time.
-	m_Sprite->Update(frameTime);
+	//m_Sprite->Update(frameTime);
 
 	//static int x = 300;
 	//static int y = 300;
@@ -284,7 +384,7 @@ bool ApplicationClass::Render(float rotation)
 	bool result;
 
 
-	// Clear the buffers to begin the scene.
+	// Clear the buffers to begin the scene. //CLEAR BG COLOR
 	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Generate the view matrix based on the camera's position.
@@ -302,22 +402,58 @@ bool ApplicationClass::Render(float rotation)
 	// Turn off the Z buffer to begin all 2D rendering.
 	m_Direct3D->TurnZBufferOff();
 
-	// Put the sprite vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	result = m_Sprite->Render(m_Direct3D->GetDeviceContext());
+	//Enable alpha blending for 2D text rendering.
+	m_Direct3D->EnableAlphaBlending();
+
+	// Render the first text string using the font shader.
+	m_TextString1->Render(m_Direct3D->GetDeviceContext());
+
+	result = m_FontShader->Render(m_Direct3D->GetDeviceContext(), m_TextString1->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix,
+		m_Font->GetTexture(), m_TextString1->GetPixelColor());
 	if (!result)
 	{
 		return false;
 	}
 
-	// Render the sprite with the texture shader.
-	result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Sprite->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, m_Sprite->GetTexture());
+	// Render the second text string using the font shader.
+	m_TextString2->Render(m_Direct3D->GetDeviceContext());
+
+	result = m_FontShader->Render(m_Direct3D->GetDeviceContext(), m_TextString2->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix,
+		m_Font->GetTexture(), m_TextString2->GetPixelColor());
 	if (!result)
 	{
 		return false;
 	}
+
+	// Render the third text string using the font shader.
+	m_TextString3->Render(m_Direct3D->GetDeviceContext());
+
+	result = m_FontShader->Render(m_Direct3D->GetDeviceContext(), m_TextString3->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix,
+		m_Font->GetTexture(), m_TextString3->GetPixelColor());
+	if (!result)
+	{
+		return false;
+	}
+
+	//// Put the sprite vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	//result = m_Sprite->Render(m_Direct3D->GetDeviceContext());
+	//if (!result)
+	//{
+	//	return false;
+	//}
+
+	//// Render the sprite with the texture shader.
+	//result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Sprite->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, m_Sprite->GetTexture());
+	//if (!result)
+	//{
+	//	return false;
+	//}
 
 	// Turn the Z buffer back on now that all 2D rendering has completed.
 	m_Direct3D->TurnZBufferOn();
+
+	//Disable alpha blending now that 2D text rendering is complete.
+	m_Direct3D->DisableAlphaBlending();
 
 	// --------------------------------------------- 3D rendering with light ----------------------------------------------------
 	//// Get the world, view, and projection matrices from the camera and d3d objects.
