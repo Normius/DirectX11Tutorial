@@ -130,6 +130,7 @@
     <ClInclude Include="applicationclass.h" />
     <ClInclude Include="fontclass.h" />
     <ClInclude Include="fontshaderclass.h" />
+    <ClInclude Include="fpsclass.h" />
     <ClInclude Include="spriteclass.h" />
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="lightclass.h" />
@@ -157,6 +158,7 @@
     <ClCompile Include="applicationclass.cpp" />
     <ClCompile Include="fontclass.cpp" />
     <ClCompile Include="fontshaderclass.cpp" />
+    <ClCompile Include="fpsclass.cpp" />
     <ClCompile Include="spriteclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="lightclass.cpp" />

@@ -21,6 +21,7 @@
 #include "fontshaderclass.h"
 #include "fontclass.h"
 #include "textclass.h"
+#include "fpsclass.h"
 
 
 /////////////
@@ -50,6 +51,7 @@ public:
 
 private:
 	bool Render(float);
+	bool UpdateFps();
 	
 private:
 	D3DClass* m_Direct3D;
@@ -67,6 +69,9 @@ private:
 	FontShaderClass* m_FontShader;
 	FontClass* m_Font;
 	TextClass* m_TextString1, * m_TextString2, * m_TextString3;
+	FpsClass* m_Fps;
+	TextClass* m_FpsString;
+	int m_previousFps;
 };
 
 //#endif

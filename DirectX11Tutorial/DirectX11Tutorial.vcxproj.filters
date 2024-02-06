@@ -75,6 +75,9 @@
     <ClInclude Include="textclass.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="fpsclass.h">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectX11Tutorial.rc">
@@ -136,6 +139,9 @@
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
     <ClCompile Include="timerclasscpp.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="fpsclass.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
   </ItemGroup>
