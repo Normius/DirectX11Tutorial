@@ -1,8 +1,4 @@
-6
-data/sprite_dino_0.tga
-data/sprite_dino_1.tga
-data/sprite_dino_2.tga
-data/sprite_dino_3.tga
-data/sprite_dino_4.tga
-data/sprite_dino_5.tga
-150
+2
+data/Sword.tga
+data/fireSword.tga
+0

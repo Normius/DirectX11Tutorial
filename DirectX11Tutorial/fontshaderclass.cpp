@@ -177,10 +177,10 @@ bool FontShaderClass::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* v
 
     // Release the vertex shader buffer and pixel shader buffer since they are no longer needed.
     vertexShaderBuffer->Release();
-    vertexShaderBuffer = 0;
+    vertexShaderBuffer = nullptr;
 
     pixelShaderBuffer->Release();
-    pixelShaderBuffer = 0;
+    pixelShaderBuffer = nullptr;
 
     // Setup the description of the dynamic matrix constant buffer that is in the vertex shader.
     matrixBufferDesc.Usage = D3D11_USAGE_DYNAMIC;

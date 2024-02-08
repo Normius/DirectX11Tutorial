@@ -60,9 +60,6 @@
     <ClInclude Include="textureshaderclass.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="spriteclass.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="timerclass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -76,6 +73,9 @@
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="fpsclass.h">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="spriteclass.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>

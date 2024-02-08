@@ -27,7 +27,7 @@ bool TextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceC
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 
 	// Load the targa image data into memory.
-	result = LoadTarga32Bit(filename);
+	result = LoadTarga24or32Bit(filename);
 	if (!result)
 	{
 		return false;
@@ -113,7 +113,7 @@ ID3D11ShaderResourceView* TextureClass::GetTexture()
 	return m_textureView;
 }
 
-bool TextureClass::LoadTarga32Bit(char* filename)
+bool TextureClass::LoadTarga24or32Bit(char* filename)
 {
 	int error, bpp, targaSize, textureSize, targaBitsPerPixel, index, i, j, k;
 	FILE* filePtr;

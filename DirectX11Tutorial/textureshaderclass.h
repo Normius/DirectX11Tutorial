@@ -31,6 +31,11 @@ private:
 		XMMATRIX projection;
 	};
 
+	struct ColorPixelBufferType
+	{
+		XMFLOAT4 pixelColor;
+	};
+
 public:
 	TextureShaderClass();
 	TextureShaderClass(const TextureShaderClass&);
@@ -54,6 +59,7 @@ private:
 	ID3D11InputLayout* m_layout;
 	ID3D11Buffer* m_matrixBuffer;
 	ID3D11SamplerState* m_sampleState;
+	ID3D11Buffer* m_colorPixelBuffer;
 };
 
 //#endif

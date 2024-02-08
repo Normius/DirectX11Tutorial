@@ -40,13 +40,16 @@ public:
     void Shutdown();
     bool Render(ID3D11DeviceContext*);
 
-    void Update(float);
+    void UpdateByTimer(float);
+    void UpdateByCondition(bool);
 
     int GetIndexCount();
     ID3D11ShaderResourceView* GetTexture();
 
     void ResizeBitMap(int, int);
     void SetRenderLocation(int, int);
+    int GetWidth();
+    int GetHeight();
 
 private:
     bool InitializeBuffers(ID3D11Device*);

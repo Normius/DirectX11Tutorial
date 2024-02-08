@@ -241,3 +241,19 @@ bool InputClass::IsMousePressed()
 
 	return false;
 }
+
+unsigned char InputClass::GetPressedKey()
+{
+	int size = sizeof(m_keyboardState);
+
+	for (int i = 0; i < size; ++i)
+	{
+		if (m_keyboardState[i] & 0x80)
+		{
+			return static_cast<unsigned char>(i);
+		}
+	}
+
+	return static_cast<unsigned char>(0);
+}
+

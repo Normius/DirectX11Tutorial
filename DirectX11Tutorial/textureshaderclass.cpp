@@ -5,7 +5,7 @@
 
 
 TextureShaderClass::TextureShaderClass()
-	:m_vertexShader(nullptr), m_pixelShader(nullptr), m_layout(nullptr), m_matrixBuffer(nullptr), m_sampleState(nullptr)
+	:m_vertexShader(nullptr), m_pixelShader(nullptr), m_layout(nullptr), m_matrixBuffer(nullptr), m_sampleState(nullptr), m_colorPixelBuffer(nullptr)
 {
 }
 

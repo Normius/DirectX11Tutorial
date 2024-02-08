@@ -80,8 +80,14 @@ bool SpriteClass::Render(ID3D11DeviceContext* deviceContext)
     return true;
 }
 
-void SpriteClass::Update(float frameTime)
+
+
+void SpriteClass::UpdateByTimer(float frameTime)
 {
+    if (m_cycleTime == 0)
+    {
+        return;
+    }
     // Increment the frame time each frame.
     m_frameTime += frameTime;
 
@@ -101,6 +107,18 @@ void SpriteClass::Update(float frameTime)
     }
 
     return;
+}
+
+void SpriteClass::UpdateByCondition(bool isPressed)
+{
+    if (isPressed)
+    {
+        m_currentTexture = 1;
+    }
+    else
+    {
+        m_currentTexture = 0;
+    }
 }
 
 int SpriteClass::GetIndexCount()
@@ -406,6 +424,26 @@ void SpriteClass::ReleaseTexture()
 
 void SpriteClass::SetRenderLocation(int x, int y)
 {
+    if (x < 0) 
+    { 
+        x = 0; 
+    }
+
+    if (y < 0)
+    {
+        y = 0;
+    }
+
+    if (x > m_screenWidth)
+    { 
+        x = m_screenWidth;
+    }
+
+    if (y > m_screenHeight)
+    { 
+        y = m_screenHeight;
+    }
+
     m_renderX = x;
     m_renderY = y;
     return;
@@ -416,4 +454,14 @@ void SpriteClass::ResizeBitMap(int new_bitmapWidth, int newbiptmapHeight)
     m_bitmapWidth = new_bitmapWidth;
 
     m_bitmapHeight = newbiptmapHeight;
+}
+
+int SpriteClass::GetWidth()
+{
+    return m_bitmapWidth;
+}
+
+int SpriteClass::GetHeight()
+{
+    return m_bitmapHeight;
 }

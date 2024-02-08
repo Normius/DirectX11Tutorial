@@ -43,7 +43,7 @@ public:
     int GetHeight();
 
 private:
-    bool LoadTarga32Bit(char*); //Функция считывания модели в память (raw)
+    bool LoadTarga24or32Bit(char*); //Функция считывания модели в память (raw)
 
 private:
     unsigned char* m_targaData;

@@ -5,10 +5,10 @@
 
 
 ApplicationClass::ApplicationClass()
-	: m_Direct3D(nullptr), m_Camera(nullptr), 
+	: m_Direct3D(nullptr), m_Camera(nullptr),
 	//m_Model(nullptr), m_LightShader(nullptr), m_Light(nullptr), m_PointLights(nullptr), 
-	//m_TextureShader(nullptr), m_Sprite(nullptr), m_Timer(nullptr),
-	m_FontShader(nullptr), m_Font(nullptr), m_TextString1(nullptr), m_TextString2(nullptr), m_TextString3(nullptr), m_Fps(nullptr), m_FpsString(nullptr), m_MouseStrings(nullptr)
+	m_TextureShader(nullptr), m_Sprite(nullptr), m_Timer(nullptr),
+	m_FontShader(nullptr), m_Font(nullptr), m_TextStrings(nullptr), m_Fps(nullptr), m_FpsString(nullptr), m_MouseStrings(nullptr), m_KeyboardSymbol(nullptr)
 {
 }
 
@@ -28,10 +28,11 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	//char modelFilename[128];
 	//char textureFilename[128];
 
-	//char spriteFilename[128];
+	char spriteFilename[128];
 	char mouseString1[32], mouseString2[32], mouseString3[32];
 	char testString1[256], testString2[256], testString3[256];
 	char fpsString[32];
+	char keyboardSymbolString[2];
 	bool result;
 
 	// Create and initialize the Direct3D object.
@@ -76,7 +77,7 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	strcpy_s(testString3, "(HI HI HI!)");
 
 	// Create and initialize the first text object.
-	m_TextString1 = new TextClass;
+	m_TextStrings = new TextClass[3];
 
 	int strWidth = m_Font->GetSentencePixelLength(testString1);
 	int strHeight = m_Font->GetFontHeight() / 2;;
@@ -84,25 +85,19 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	int widthCenterPos = (screenWidth / 2) - (strWidth / 2);
 	int heightCenterPos = (screenHeight / 2) - (strHeight / 2);
 	
-	result = m_TextString1->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, m_Font, testString1, widthCenterPos, heightCenterPos, 1.0f, 0.2f, 0.0f);
+	result = m_TextStrings[0].Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, m_Font, testString1, widthCenterPos, heightCenterPos, 1.0f, 0.2f, 0.0f);
 	if (!result)
 	{
 		return false;
 	}
 
-	// Create and initialize the second text object.
-	m_TextString2 = new TextClass;
-
-	result = m_TextString2->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, m_Font, testString2, 300, 150, 0.0f, 0.5f, 1.0f);
+	result = m_TextStrings[1].Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, m_Font, testString2, 300, 150, 0.0f, 0.5f, 1.0f);
 	if (!result)
 	{
 		return false;
 	}
 
-	// Create and initialize the third text object.
-	m_TextString3 = new TextClass;
-
-	result = m_TextString3->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, m_Font, testString3, 300, 200, 0.0f, 1.0f, 1.0f);
+	result = m_TextStrings[2].Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 256, m_Font, testString3, 300, 200, 0.0f, 1.0f, 1.0f);
 	if (!result)
 	{
 		return false;
@@ -154,39 +149,54 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	strcpy_s(keyboardSymbolString, "A");
+
+	m_KeyboardSymbol = new TextClass;
+
+	result = m_KeyboardSymbol->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 2, m_Font, keyboardSymbolString, 200, 200, 1.0f, 1.0f, 1.0f);
+	if (!result)
+	{
+		return false;
+	}
 
 	// ---------------------------------------- 2D rendering with sprites --------------------------------------------
-	//// Create and initialize the texture shader object.
-	//m_TextureShader = new TextureShaderClass;
+	// Create and initialize the texture shader object.
+	m_TextureShader = new TextureShaderClass;
 
-	//result = m_TextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
-	//if (!result)
-	//{
-	//	MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
-	//	return false;
-	//}
+	result = m_TextureShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the texture shader object.", L"Error", MB_OK);
+		return false;
+	}
 
-	//// Set the file name of the bitmap file.
-	//strcpy_s(spriteFilename, "data/sprite_data_01.txt");
-	////strcpy_s(bitmapFilename, "data/dwsample.tga");
+	// Set the file name of the bitmap file.
+	strcpy_s(spriteFilename, "data/sprite_data_01.txt");
+	//strcpy_s(bitmapFilename, "data/dwsample.tga");
 
-	//// Create and initialize the bitmap object.
-	//m_Sprite = new SpriteClass;
+	// Create and initialize the bitmap object.
+	m_Sprite = new SpriteClass;
 
-	//result = m_Sprite->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, spriteFilename, 50, 50);
-	//if (!result)
-	//{
-	//	return false;
-	//}
+	
+	result = m_Sprite->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, spriteFilename, 30, 30);
+	if (!result)
+	{
+		return false;
+	}
 
-	//// Create and initialize the timer object.
-	//m_Timer = new TimerClass;
+	int spriteNewWidth = m_Sprite->GetWidth() / 8;
+	int spriteNewHeight = m_Sprite->GetHeight() / 8;
 
-	//result = m_Timer->Initialize();
-	//if (!result)
-	//{
-	//	return false;
-	//}
+	m_Sprite->ResizeBitMap(spriteNewWidth, spriteNewHeight);
+
+	// Create and initialize the timer object.
+	m_Timer = new TimerClass;
+
+	result = m_Timer->Initialize();
+	if (!result)
+	{
+		return false;
+	}
 
 
 	// --------------------------------------------- 3D rendering with light ----------------------------------------------------
@@ -254,6 +264,14 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void ApplicationClass::Shutdown()
 {
+	// Release the text object for the fps string.
+	if (m_KeyboardSymbol)
+	{
+		m_KeyboardSymbol->Shutdown();
+		delete m_KeyboardSymbol;
+		m_KeyboardSymbol = nullptr;
+	}
+
 	// Release the text objects for the mouse strings.
 	if (m_MouseStrings)
 	{
@@ -281,25 +299,13 @@ void ApplicationClass::Shutdown()
 	}
 
 	// Release the text string objects.
-	if (m_TextString3)
+	if (m_TextStrings)
 	{
-		m_TextString3->Shutdown();
-		delete m_TextString3;
-		m_TextString3 = nullptr;
-	}
-	
-	if (m_TextString2)
-	{
-		m_TextString2->Shutdown();
-		delete m_TextString2;
-		m_TextString2 = nullptr;
-	}
-
-	if (m_TextString1)
-	{
-		m_TextString1->Shutdown();
-		delete m_TextString1;
-		m_TextString1 = nullptr;
+		m_TextStrings[0].Shutdown();
+		m_TextStrings[1].Shutdown();
+		m_TextStrings[2].Shutdown();
+		delete[] m_TextStrings;
+		m_TextStrings = nullptr;
 	}
 
 	// Release the font object.
@@ -318,29 +324,28 @@ void ApplicationClass::Shutdown()
 		m_FontShader = nullptr;
 	}
 
-	//// Release the timer object.
-	//if (m_Timer)
-	//{
-	//	delete m_Timer;
-	//	m_Timer = nullptr;
-	//}
+	// Release the timer object.
+	if (m_Timer)
+	{
+		delete m_Timer;
+		m_Timer = nullptr;
+	}
 
-	//// Release the sprite object.
-	//if (m_Sprite)
-	//{
-	//	m_Sprite->Shutdown();
-	//	delete m_Sprite;
-	//	m_Sprite = nullptr;
-	//}
+	// Release the sprite object.
+	if (m_Sprite)
+	{
+		m_Sprite->Shutdown();
+		delete m_Sprite;
+		m_Sprite = nullptr;
+	}
 
-	//// Release the texture shader object.
-	//if (m_TextureShader)
-	//{
-	//	m_TextureShader->Shutdown();
-	//	delete m_TextureShader;
-	//	m_TextureShader = nullptr;
-
-	//}
+	// Release the texture shader object.
+	if (m_TextureShader)
+	{
+		m_TextureShader->Shutdown();
+		delete m_TextureShader;
+		m_TextureShader = nullptr;
+	}
 
 	//// Release the light objects.
 	//if (m_PointLights)
@@ -419,6 +424,15 @@ bool ApplicationClass::Frame(InputClass* Input)
 		return false;
 	}
 
+	unsigned char keyboardSymbol = Input->GetPressedKey();
+
+	// Update the mouse strings each frame.
+	result = ShowPressedKey(keyboardSymbol);
+	if (!result)
+	{
+		return false;
+	}
+
 	// Update the rotation variable each frame.
 	/*rotation -= 0.0174532925f * 0.25f;
 	if (rotation < 0.0f)
@@ -427,18 +441,20 @@ bool ApplicationClass::Frame(InputClass* Input)
 	}*/
 
 	// Update the system stats.
-	//m_Timer->Frame();
+	m_Timer->Frame();
 
 	// Get the current frame time.
-	//frameTime = m_Timer->GetTime();
+	frameTime = m_Timer->GetTime();
+
+	m_Sprite->UpdateByCondition(mouseDown);
 
 	// Update the sprite object using the frame time.
-	//m_Sprite->Update(frameTime);
+	m_Sprite->UpdateByTimer(frameTime);
 
 	//static int x = 300;
 	//static int y = 300;
 
-	//m_Sprite->SetRenderLocation(x, y);
+	m_Sprite->SetRenderLocation(mouseX, mouseY);
 
 	//m_Sprite->ResizeBitMap(x, y);
 
@@ -488,7 +504,7 @@ bool ApplicationClass::Render(float rotation)
 	bool result;
 
 
-	// Clear the buffers to begin the scene. //CLEAR BG COLOR
+	// Clear the buffers to begin the scene. //CLEAR BACKGROUND BG COLOR
 	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Generate the view matrix based on the camera's position.
@@ -509,34 +525,17 @@ bool ApplicationClass::Render(float rotation)
 	//Enable alpha blending for 2D text rendering.
 	m_Direct3D->EnableAlphaBlending();
 
-	// Render the first text string using the font shader.
-	m_TextString1->Render(m_Direct3D->GetDeviceContext());
-
-	result = m_FontShader->Render(m_Direct3D->GetDeviceContext(), m_TextString1->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix,
-		m_Font->GetTexture(), m_TextString1->GetPixelColor());
-	if (!result)
+	// Render the text strings using the font shader.
+	for (i = 0; i < 3; i++)
 	{
-		return false;
-	}
+		m_TextStrings[i].Render(m_Direct3D->GetDeviceContext());
 
-	// Render the second text string using the font shader.
-	m_TextString2->Render(m_Direct3D->GetDeviceContext());
-
-	result = m_FontShader->Render(m_Direct3D->GetDeviceContext(), m_TextString2->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix,
-		m_Font->GetTexture(), m_TextString2->GetPixelColor());
-	if (!result)
-	{
-		return false;
-	}
-
-	// Render the third text string using the font shader.
-	m_TextString3->Render(m_Direct3D->GetDeviceContext());
-
-	result = m_FontShader->Render(m_Direct3D->GetDeviceContext(), m_TextString3->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix,
-		m_Font->GetTexture(), m_TextString3->GetPixelColor());
-	if (!result)
-	{
-		return false;
+		result = m_FontShader->Render(m_Direct3D->GetDeviceContext(), m_TextStrings[i].GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix,
+			m_Font->GetTexture(), m_TextStrings[i].GetPixelColor());
+		if (!result)
+		{
+			return false;
+		}
 	}
 
 	// ------------------------------------------------------------ FPS COUNTER ------------------------------------------------------------
@@ -564,19 +563,28 @@ bool ApplicationClass::Render(float rotation)
 	}
 
 
-	//// Put the sprite vertex and index buffers on the graphics pipeline to prepare them for drawing.
-	//result = m_Sprite->Render(m_Direct3D->GetDeviceContext());
-	//if (!result)
-	//{
-	//	return false;
-	//}
+	// Put the sprite vertex and index buffers on the graphics pipeline to prepare them for drawing.
+	result = m_Sprite->Render(m_Direct3D->GetDeviceContext());
+	if (!result)
+	{
+		return false;
+	}
 
-	//// Render the sprite with the texture shader.
-	//result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Sprite->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, m_Sprite->GetTexture());
-	//if (!result)
-	//{
-	//	return false;
-	//}
+	// Render the sprite with the texture shader.
+	result = m_TextureShader->Render(m_Direct3D->GetDeviceContext(), m_Sprite->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix, m_Sprite->GetTexture());
+	if (!result)
+	{
+		return false;
+	}
+
+	m_KeyboardSymbol->Render(m_Direct3D->GetDeviceContext());
+
+	result = m_FontShader->Render(m_Direct3D->GetDeviceContext(), m_KeyboardSymbol->GetIndexCount(), worldMatrix, viewMatrix, orthoMatrix,
+		m_Font->GetTexture(), m_KeyboardSymbol->GetPixelColor());
+	if (!result)
+	{
+		return false;
+	}
 
 	// Turn the Z buffer back on now that all 2D rendering has completed.
 	m_Direct3D->TurnZBufferOn();
@@ -692,6 +700,57 @@ bool ApplicationClass::UpdateFps()
 
 	// Update the sentence vertex buffer with the new string information.
 	result = m_FpsString->UpdateText(m_Direct3D->GetDeviceContext(), m_Font, finalString, 800 - strWidth - 10, 10, red, green, blue);
+	if (!result)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ApplicationClass::ShowPressedKey(unsigned char keyboardSymbol)
+{
+	if (keyboardSymbol == '\0')
+	{
+		return true;
+	}
+
+	char directInputToASCII[51]{ '\0' };
+	{
+		directInputToASCII[30] = 'A';
+		directInputToASCII[48] = 'B';
+		directInputToASCII[46] = 'C';
+		directInputToASCII[32] = 'D';
+		directInputToASCII[18] = 'E';
+		directInputToASCII[33] = 'F';
+		directInputToASCII[34] = 'G';
+		directInputToASCII[35] = 'H';
+		directInputToASCII[23] = 'I';
+		directInputToASCII[36] = 'J';
+		directInputToASCII[37] = 'K';
+		directInputToASCII[38] = 'L';
+		directInputToASCII[50] = 'M';
+		directInputToASCII[49] = 'N';
+		directInputToASCII[24] = 'O';
+		directInputToASCII[25] = 'P';
+		directInputToASCII[16] = 'Q';
+		directInputToASCII[19] = 'R';
+		directInputToASCII[31] = 'S';
+		directInputToASCII[20] = 'T';
+		directInputToASCII[22] = 'U';
+		directInputToASCII[47] = 'V';
+		directInputToASCII[17] = 'W';
+		directInputToASCII[45] = 'X';
+		directInputToASCII[21] = 'Y';
+		directInputToASCII[44] = 'Z';
+	}
+
+	bool result;
+	char symbol[2];
+	symbol[0] = directInputToASCII[static_cast<int>(keyboardSymbol)];
+	symbol[1] = '\0';
+
+	result = m_KeyboardSymbol->UpdateText(m_Direct3D->GetDeviceContext(), m_Font, symbol, 60, 85, 1.0f, 1.0f, 1.0f);
 	if (!result)
 	{
 		return false;
