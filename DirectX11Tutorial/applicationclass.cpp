@@ -32,7 +32,7 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	char mouseString1[32], mouseString2[32], mouseString3[32];
 	char testString1[256], testString2[256], testString3[256];
 	char fpsString[32];
-	char keyboardSymbolString[2];
+	char keyboardSymbolString[32];
 	bool result;
 
 	// Create and initialize the Direct3D object.
@@ -149,11 +149,11 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	strcpy_s(keyboardSymbolString, "A");
+	strcpy_s(keyboardSymbolString, "Keyboard Button: ");
 
 	m_KeyboardSymbol = new TextClass;
 
-	result = m_KeyboardSymbol->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 2, m_Font, keyboardSymbolString, 200, 200, 1.0f, 1.0f, 1.0f);
+	result = m_KeyboardSymbol->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), screenWidth, screenHeight, 32, m_Font, keyboardSymbolString, 10, 85, 1.0f, 1.0f, 1.0f);
 	if (!result)
 	{
 		return false;
@@ -746,11 +746,15 @@ bool ApplicationClass::ShowPressedKey(unsigned char keyboardSymbol)
 	}
 
 	bool result;
+	char keyboardButton[32];
 	char symbol[2];
+
 	symbol[0] = directInputToASCII[static_cast<int>(keyboardSymbol)];
 	symbol[1] = '\0';
+	strcpy_s(keyboardButton, "Keyboard Button: ");
+	strcat_s(keyboardButton, symbol);
 
-	result = m_KeyboardSymbol->UpdateText(m_Direct3D->GetDeviceContext(), m_Font, symbol, 60, 85, 1.0f, 1.0f, 1.0f);
+	result = m_KeyboardSymbol->UpdateText(m_Direct3D->GetDeviceContext(), m_Font, keyboardButton, 10, 85, 1.0f, 1.0f, 1.0f);
 	if (!result)
 	{
 		return false;
