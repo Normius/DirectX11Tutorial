@@ -5,7 +5,7 @@
 #include <string>
 
 ModelClass::ModelClass()
-	: m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_Texture(nullptr), 
+	: m_vertexBuffer(nullptr), m_indexBuffer(nullptr), m_Textures(nullptr), 
 	  m_vertexCount(0), m_indexCount(0), m_model(nullptr)
 {
 }
@@ -21,7 +21,7 @@ ModelClass::~ModelClass()
 }
 
 
-bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* modelFilename, char* textureFilename)
+bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* modelFilename, char* textureFilename1, char* textureFilename2, char* textureFilename3)
 {
 	bool result;
 
@@ -40,7 +40,7 @@ bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 	}
 
 	// Load the texture for this model.
-	result = LoadTexture(device, deviceContext, textureFilename);
+	result = LoadTextures(device, deviceContext, textureFilename1, textureFilename2, textureFilename3);
 	if (!result)
 	{
 		return false;
@@ -52,7 +52,7 @@ bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 void ModelClass::Shutdown()
 {
 	// Release the model texture.
-	ReleaseTexture();
+	ReleaseTextures();
 
 	// Shutdown the vertex and index buffers.
 	ShutdownBuffers();
@@ -76,9 +76,9 @@ int ModelClass::GetIndexCount()
 	return m_indexCount;
 }
 
-ID3D11ShaderResourceView* ModelClass::GetTexture()
+ID3D11ShaderResourceView* ModelClass::GetTexture(int index)
 {
-	return m_Texture->GetTexture();
+	return m_Textures[index].GetTexture();
 }
 
 //В этой функции обрабатываем создания буферов вершин и индексов. Здесь можно считать модель (3D, 2D) объекта, но для примера у нас вручную вбит треугольник
@@ -91,14 +91,6 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	HRESULT result;
 	int i;
 
-	//Устанавливаем для треугольника вручную (количество вершин и индексов)
-	// Set the number of vertices in the vertex array.
-	//m_vertexCount = 3;
-	//m_vertexCount = 6;
-
-	// Set the number of indices in the index array.
-	//m_indexCount = 3;
-	//m_indexCount = 6;
 
 	// Create the vertex array.
 	vertices = new VertexType[m_vertexCount];
@@ -124,25 +116,6 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 
 		indices[i] = i;
 	}
-
-	//Устанавливаем данные для треугольника вручную (координаты вершин и текстура)
-	// Load the vertex array with data.
-	//vertices[0].position = XMFLOAT3(-1.0f, -1.0f, 0.0f);  // Bottom left.
-	//vertices[0].texture = XMFLOAT2(0.0f, 1.0f);
-	//vertices[0].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-
-	//vertices[1].position = XMFLOAT3(0.0f, 1.0f, 0.0f);  // Top middle 
-	//vertices[1].texture = XMFLOAT2(0.5f, 0.0f);
-	//vertices[1].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-
-	//vertices[2].position = XMFLOAT3(1.0f, -1.0f, 0.0f);  // Bottom right.
-	//vertices[2].texture = XMFLOAT2(1.0f, 1.0f);
-	//vertices[2].normal = XMFLOAT3(0.0f, 0.0f, -1.0f);
-
-	//// Load the index array with data.
-	//indices[0] = 0;  // Bottom left.
-	//indices[1] = 1;  // Top middle.
-	//indices[2] = 2;  // Bottom right.
 
 	// Set up the description of the static vertex buffer.
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -235,15 +208,27 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	return;
 }
 
-bool ModelClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* filename)
+bool ModelClass::LoadTextures(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* filename1, char* filename2, char* filename3)
 {
 	bool result;
 
 
 	// Create and initialize the texture object.
-	m_Texture = new TextureClass;
+	m_Textures = new TextureClass[3];
 
-	result = m_Texture->Initialize(device, deviceContext, filename);
+	result = m_Textures[0].Initialize(device, deviceContext, filename1);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = m_Textures[1].Initialize(device, deviceContext, filename2);
+	if (!result)
+	{
+		return false;
+	}
+
+	result = m_Textures[2].Initialize(device, deviceContext, filename3);
 	if (!result)
 	{
 		return false;
@@ -252,14 +237,17 @@ bool ModelClass::LoadTexture(ID3D11Device* device, ID3D11DeviceContext* deviceCo
 	return true;
 }
 
-void ModelClass::ReleaseTexture()
+void ModelClass::ReleaseTextures()
 {
 	// Release the texture object.
-	if (m_Texture)
+	if (m_Textures)
 	{
-		m_Texture->Shutdown();
-		delete m_Texture;
-		m_Texture = 0;
+		m_Textures[0].Shutdown();
+		m_Textures[1].Shutdown();
+		m_Textures[2].Shutdown();
+
+		delete[] m_Textures;
+		m_Textures = nullptr;
 	}
 
 	return;
@@ -464,39 +452,6 @@ bool ModelClass::LoadModel(char* filename)
 	{
 		return false;
 	}
-
-	//// Read up to the value of vertex count.
-	//fin.get(input);
-	//while (input != ':')
-	//{
-	//	fin.get(input);
-	//}
-
-	//// Read in the vertex count.
-	//fin >> m_vertexCount;
-
-	//// Set the number of indices to be the same as the vertex count.
-	//m_indexCount = m_vertexCount;
-
-	//// Create the model using the vertex count that was read in.
-	//m_model = new ModelType[m_vertexCount];
-
-	//// Read up to the beginning of the data.
-	//fin.get(input);
-	//while (input != ':')
-	//{
-	//	fin.get(input);
-	//}
-	//fin.get(input);
-	//fin.get(input);
-
-	//// Read in the vertex data.
-	//for (i = 0; i < m_vertexCount; i++)
-	//{
-	//	fin >> m_model[i].x >> m_model[i].y >> m_model[i].z;
-	//	fin >> m_model[i].tu >> m_model[i].tv;
-	//	fin >> m_model[i].nx >> m_model[i].ny >> m_model[i].nz;
-	//}
 
 	// Close the model file.
 	fin.close();

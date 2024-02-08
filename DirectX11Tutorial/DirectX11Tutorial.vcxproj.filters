@@ -57,6 +57,9 @@
     <ClInclude Include="lightclass.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="lightmapshaderclass.h">
+      <Filter>Source Files\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DirectX11Tutorial.rc">
@@ -102,12 +105,21 @@
     <ClCompile Include="lightclass.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="lightmapshaderclass.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="light.vs">
       <Filter>Source Files\HLSL shader program</Filter>
     </None>
     <None Include="light.ps">
+      <Filter>Source Files\HLSL shader program</Filter>
+    </None>
+    <None Include="lightmap.ps">
+      <Filter>Source Files\HLSL shader program</Filter>
+    </None>
+    <None Include="lightmap.vs">
       <Filter>Source Files\HLSL shader program</Filter>
     </None>
   </ItemGroup>
