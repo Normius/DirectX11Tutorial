@@ -1,10 +1,10 @@
 #pragma once
 
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: lightmapshaderclass.h
+// Filename: alphamapshaderclass.h
 ////////////////////////////////////////////////////////////////////////////////
-//#ifndef _LIGHTMAPSHADERCLASS_H_
-//#define _LIGHTMAPSHADERCLASS_H_
+//#ifndef _ALPHAMAPSHADERCLASS_H_
+//#define _ALPHAMAPSHADERCLASS_H_
 
 
 //////////////
@@ -18,9 +18,9 @@ using namespace DirectX;
 using namespace std;
 
 ////////////////////////////////////////////////////////////////////////////////
-// Class name: LightMapShaderClass
+// Class name: AlphaMapShaderClass
 ////////////////////////////////////////////////////////////////////////////////
-class LightMapShaderClass
+class AlphaMapShaderClass
 {
 private:
     struct MatrixBufferType
@@ -31,9 +31,9 @@ private:
     };
 
 public:
-    LightMapShaderClass();
-    LightMapShaderClass(const LightMapShaderClass&);
-    ~LightMapShaderClass();
+    AlphaMapShaderClass();
+    AlphaMapShaderClass(const AlphaMapShaderClass&);
+    ~AlphaMapShaderClass();
 
     bool Initialize(ID3D11Device*, HWND);
     void Shutdown();

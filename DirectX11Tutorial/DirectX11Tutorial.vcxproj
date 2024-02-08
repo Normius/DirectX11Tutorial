@@ -130,7 +130,7 @@
     <ClInclude Include="applicationclass.h" />
     <ClInclude Include="cameraclass.h" />
     <ClInclude Include="lightclass.h" />
-    <ClInclude Include="lightmapshaderclass.h" />
+    <ClInclude Include="alphamapshaderclass.h" />
     <ClInclude Include="textureclass.h" />
     <ClInclude Include="lightshaderclass.h" />
     <ClInclude Include="d3dclass.h" />
@@ -152,7 +152,7 @@
     <ClCompile Include="applicationclass.cpp" />
     <ClCompile Include="cameraclass.cpp" />
     <ClCompile Include="lightclass.cpp" />
-    <ClCompile Include="lightmapshaderclass.cpp" />
+    <ClCompile Include="alphamapshaderclass.cpp" />
     <ClCompile Include="textureclass.cpp" />
     <ClCompile Include="lightshaderclass.cpp" />
     <ClCompile Include="d3dclass.cpp" />
@@ -164,8 +164,8 @@
   <ItemGroup>
     <None Include="light.ps" />
     <None Include="light.vs" />
-    <None Include="lightmap.ps" />
-    <None Include="lightmap.vs" />
+    <None Include="alphamap.ps" />
+    <None Include="alphamap.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

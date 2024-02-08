@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-// Filename: lightmap.ps
+// Filename: alphamap.ps
 ////////////////////////////////////////////////////////////////////////////////
 
 
@@ -26,27 +26,14 @@ struct PixelInputType
 ////////////////////////////////////////////////////////////////////////////////
 // Pixel Shader
 ////////////////////////////////////////////////////////////////////////////////
-float4 LightMapPixelShader(PixelInputType input) : SV_TARGET
+float4 AlphaMapPixelShader(PixelInputType input) : SV_TARGET
 {
     float4 color1;
     float4 color2;
+    float4 alphaValue;
     float4 lightColor;
     float4 finalColor;
-    //float4 color3;
     float4 blendColor;
-
-    // Sample the pixel color from the textures using the sampler at this texture coordinate location.
-    //color1 = shaderTexture1.Sample(SampleType, input.tex);
-    //color2 = shaderTexture2.Sample(SampleType, input.tex);
-    //color3 = shaderTexture3.Sample(SampleType, input.tex);
-
-    // Combine the two textures together.
-    //blendColor = color1 * 0.5f + color2 * 0.5f + color3 * 0.5f;
-
-    // Saturate the final color.
-    //blendColor = saturate(blendColor);
-
-    //return blendColor;
 
     // Get the pixel color from the color texture.
     color1 = shaderTexture1.Sample(SampleType, input.tex);
@@ -54,17 +41,20 @@ float4 LightMapPixelShader(PixelInputType input) : SV_TARGET
     // Get the pixel color from the color texture.
     color2 = shaderTexture2.Sample(SampleType, input.tex);
 
-    // Combine the two textures together.
-    blendColor = color1 * color2;;
+    // Get the pixel color from the alpha texture.
+    alphaValue  = shaderTexture3.Sample(SampleType, input.tex);
+
+    // Get the pixel color from the light map.
+    //lightColor = shaderTexture3.Sample(SampleType, input.tex);
+
+    // Combine the two textures based on the alpha value.
+    blendColor = ((alphaValue - 0.5f) * color1) + ((1.0 - alphaValue + 0.5f) * color2);
 
     // Saturate the final color.
     blendColor = saturate(blendColor);
-
-    // Get the pixel color from the light map.
-    lightColor = shaderTexture3.Sample(SampleType, input.tex);
 	
     // Blend the two pixels together.
-    finalColor = blendColor * lightColor * 1.5f;
+    //finalColor = blendColor * lightColor * 1.5f;
 
-    return finalColor;
+    return blendColor;
 }

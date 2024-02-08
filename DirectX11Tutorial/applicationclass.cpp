@@ -7,7 +7,7 @@
 ApplicationClass::ApplicationClass()
 	: m_Direct3D(nullptr), m_Camera(nullptr), m_Model(nullptr), 
 	//m_LightShader(nullptr), m_Light(nullptr), m_PointLights(nullptr)
-	m_LightMapShader(nullptr)
+	m_AlphaMapShader(nullptr)
 {
 }
 
@@ -48,9 +48,9 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	//m_Camera->Render();
 
 	// Create and initialize the multitexture shader object.
-	m_LightMapShader = new LightMapShaderClass;
+	m_AlphaMapShader = new AlphaMapShaderClass;
 
-	result = m_LightMapShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	result = m_AlphaMapShader->Initialize(m_Direct3D->GetDevice(), hwnd);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the multitexture shader object.", L"Error", MB_OK);
@@ -63,7 +63,7 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// Set the file name of the textures.
 	strcpy_s(textureFilename1, "data/stone01.tga");
 	strcpy_s(textureFilename2, "data/dirt01.tga");
-	strcpy_s(textureFilename3, "data/light01.tga");
+	strcpy_s(textureFilename3, "data/alpha01.tga");
 
 	// Create and initialize the model object.
 	m_Model = new ModelClass;
@@ -124,11 +124,11 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 void ApplicationClass::Shutdown()
 {
 	// Release the multitexture shader object.
-	if (m_LightMapShader)
+	if (m_AlphaMapShader)
 	{
-		m_LightMapShader->Shutdown();
-		delete m_LightMapShader;
-		m_LightMapShader = nullptr;
+		m_AlphaMapShader->Shutdown();
+		delete m_AlphaMapShader;
+		m_AlphaMapShader = nullptr;
 	}
 
 	//// Release the light objects.
@@ -257,7 +257,7 @@ bool ApplicationClass::Render(float rotation)
 	//	return false;
 	//}
 
-	result = m_LightMapShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+	result = m_AlphaMapShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
 		m_Model->GetTexture(0), m_Model->GetTexture(1), m_Model->GetTexture(2));
 	if (!result)
 	{
