@@ -57,7 +57,7 @@
     <ClInclude Include="lightclass.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="alphamapshaderclass.h">
+    <ClInclude Include="normalmapshaderclass.h">
       <Filter>Source Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>
@@ -105,7 +105,7 @@
     <ClCompile Include="lightclass.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="alphamapshaderclass.cpp">
+    <ClCompile Include="normalmapshaderclass.cpp">
       <Filter>Source Files\Engine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,10 +116,10 @@
     <None Include="light.ps">
       <Filter>Source Files\HLSL shader program</Filter>
     </None>
-    <None Include="alphamap.ps">
+    <None Include="normalmap.ps">
       <Filter>Source Files\HLSL shader program</Filter>
     </None>
-    <None Include="alphamap.vs">
+    <None Include="normalmap.vs">
       <Filter>Source Files\HLSL shader program</Filter>
     </None>
   </ItemGroup>

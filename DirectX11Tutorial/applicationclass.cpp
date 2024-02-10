@@ -6,8 +6,8 @@
 
 ApplicationClass::ApplicationClass()
 	: m_Direct3D(nullptr), m_Camera(nullptr), m_Model(nullptr), 
-	//m_LightShader(nullptr), m_Light(nullptr), m_PointLights(nullptr)
-	m_AlphaMapShader(nullptr)
+	//m_LightShader(nullptr), m_PointLights(nullptr)
+	m_NormalMapShader(nullptr), m_Light(nullptr)
 {
 }
 
@@ -27,7 +27,7 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	char modelFilename[128];
 	char textureFilename1[128];
 	char textureFilename2[128];
-	char textureFilename3[128];
+	//char textureFilename3[128];
 	bool result;
 
 	// Create and initialize the Direct3D object.
@@ -44,13 +44,13 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	m_Camera = new CameraClass;
 
 	// Set the initial position of the camera.
-	m_Camera->SetPosition(0.0f, 0.0f, -5.0f);
+	m_Camera->SetPosition(1.5f, 1.5f, -7.0f);
 	//m_Camera->Render();
 
 	// Create and initialize the multitexture shader object.
-	m_AlphaMapShader = new AlphaMapShaderClass;
+	m_NormalMapShader = new NormalMapShaderClass;
 
-	result = m_AlphaMapShader->Initialize(m_Direct3D->GetDevice(), hwnd);
+	result = m_NormalMapShader->Initialize(m_Direct3D->GetDevice(), hwnd);
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the multitexture shader object.", L"Error", MB_OK);
@@ -58,21 +58,27 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Set the file name of the model.
-	strcpy_s(modelFilename, "data/square.txt"); //Имя файла модели
+	strcpy_s(modelFilename, "data/sphere.txt"); //Имя файла модели
 
 	// Set the file name of the textures.
 	strcpy_s(textureFilename1, "data/stone01.tga");
-	strcpy_s(textureFilename2, "data/dirt01.tga");
-	strcpy_s(textureFilename3, "data/alpha01.tga");
+	strcpy_s(textureFilename2, "data/normal01.tga");
+	//strcpy_s(textureFilename3, "data/alpha01.tga");
 
 	// Create and initialize the model object.
 	m_Model = new ModelClass;
 
-	result = m_Model->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), modelFilename, textureFilename1, textureFilename2, textureFilename3);
+	result = m_Model->Initialize(m_Direct3D->GetDevice(), m_Direct3D->GetDeviceContext(), modelFilename, textureFilename1, textureFilename2);
 	if (!result)
 	{
 		return false;
 	}
+
+	// Create and initialize the light object.
+	m_Light = new LightClass;
+
+	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Light->SetDirection(1.0f, 1.0f, 1.0f);
 
 	// --------------------------------------- 3D LIGHT -----------------------------------------------
 	//// Create and initialize the light shader object.
@@ -124,11 +130,11 @@ bool ApplicationClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 void ApplicationClass::Shutdown()
 {
 	// Release the multitexture shader object.
-	if (m_AlphaMapShader)
+	if (m_NormalMapShader)
 	{
-		m_AlphaMapShader->Shutdown();
-		delete m_AlphaMapShader;
-		m_AlphaMapShader = nullptr;
+		m_NormalMapShader->Shutdown();
+		delete m_NormalMapShader;
+		m_NormalMapShader = nullptr;
 	}
 
 	//// Release the light objects.
@@ -138,12 +144,12 @@ void ApplicationClass::Shutdown()
 	//	m_PointLights = nullptr;
 	//}
 
-	//// Release the light object.
-	//if (m_Light)
-	//{
-	//	delete m_Light;
-	//	m_Light = nullptr;
-	//}
+	// Release the light object.
+	if (m_Light)
+	{
+		delete m_Light;
+		m_Light = nullptr;
+	}
 
 	//// Release the light shader object.
 	//if (m_LightShader)
@@ -183,7 +189,7 @@ void ApplicationClass::Shutdown()
 bool ApplicationClass::Frame()
 {
 	bool result;
-	static float rotation = 0.0f;
+	static float rotation = 360.0f;
 
 	// Update the rotation variable each frame.
 	rotation -= 0.0174532925f * 0.25f;
@@ -235,9 +241,9 @@ bool ApplicationClass::Render(float rotation)
 	//	pointLightPosition[i] = m_PointLights[i].GetPosition();
 	//}
 
-	rotation = 0.0f;
+	//rotation = 0.0f;
 	scaleMatrix = XMMatrixScaling(1.0f, 1.0f, 1.0f);  // Build the scaling matrix.
-	rotateMatrix = XMMatrixRotationY(rotation);  // Build the rotation matrix.
+	rotateMatrix = XMMatrixRotationY(rotation);  // Build the rotation matrix.  // Build the rotation matrix.
 	translateMatrix = XMMatrixTranslation(0.0f, 0.0f, 0.0f);  // Build the translation matrix.
 
 	//Multiply the scale, rotation, and translation matrices together to create the final world transformation matrix. //Трансформ матрицы
@@ -257,8 +263,8 @@ bool ApplicationClass::Render(float rotation)
 	//	return false;
 	//}
 
-	result = m_AlphaMapShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_Model->GetTexture(0), m_Model->GetTexture(1), m_Model->GetTexture(2));
+	result = m_NormalMapShader->Render(m_Direct3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_Model->GetTexture(0), m_Model->GetTexture(1), m_Light->GetDirection(), m_Light->GetDiffuseColor());
 	if (!result)
 	{
 		return false;

@@ -12,11 +12,10 @@
 ///////////////////////
 #include "d3dclass.h"
 #include "cameraclass.h"
-#include "alphamapshaderclass.h"
+#include "normalmapshaderclass.h"
 #include "modelclass.h"
+#include "lightclass.h"
 //#include "lightshaderclass.h"
-//#include "lightclass.h"
-
 
 
 /////////////
@@ -52,10 +51,10 @@ private:
 	CameraClass* m_Camera;
 	ModelClass* m_Model;
 	//LightShaderClass* m_LightShader;
-	//LightClass* m_Light;
+	LightClass* m_Light;
 	//LightClass* m_PointLights;
 	//int m_numLights;
-	AlphaMapShaderClass* m_AlphaMapShader;
+	NormalMapShaderClass* m_NormalMapShader;
 };
 
 //#endif
